@@ -1,0 +1,43 @@
+package com.cognizant.model;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Notnull;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "menuitems")
+@Data
+public class MenuItem {
+	@Id
+	private long id;
+	@Column
+	@Notnull(message = "Name Cannot be blank")
+	private String name;
+	@Column
+	@Notnull(message = "Price Cannot be blank")
+	private float price;
+	@Column
+	@Notnull(message = "Product Active Status Cannot be blank")
+	private boolean actv;
+
+	@Column
+	@Notnull(message = "date of Launch Cannot be blank")
+	private Date dateOfLaunch;
+	@Column
+	@Notnull(message = "Category Cannot be blank")
+	private String category;
+	@Column
+	@Notnull(message = "Delivery status Cannot be blank")
+	private boolean freeDelivery;
+
+}

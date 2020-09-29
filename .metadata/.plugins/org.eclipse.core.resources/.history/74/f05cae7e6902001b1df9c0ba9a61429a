@@ -1,0 +1,57 @@
+package com.cognizant.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.cognizant.exception.MenuItemNotFoundException;
+import com.cognizant.model.MenuItem;
+import com.cognizant.repository.MenuItemRepository;
+
+@Service
+public class MenuItemService {
+
+	@Autowired
+	MenuItemRepository menuRepo;
+
+	public List<MenuItem> findAll() {
+
+		return menuRepo.findAll();
+	}
+
+	public Optional<MenuItem> findById(Long id) {
+
+		return menuRepo.findById(id);
+	}
+
+	public String save(MenuItem newItem) {
+		// TODO Auto-generated method stub
+		 menuRepo.save(newItem);
+		 return "Item added successfully";
+	}
+
+	public String updateMenuItem(MenuItem newItem) throws MenuItemNotFoundException{
+			MenuItem item=menuRepo.findById(newItem.getId()).orElseThrow(()->new MenuItemNotFoundException(newItem.getId()));
+		    item.setActv(newItem.isActv());
+		    item.setPrice(newItem.getPrice());
+		    item.setFreeDelivery(newItem.isFreeDelivery());
+		    menuRepo.save(item);
+		    return "Updated successfully";
+		
+	}
+
+	public String deleteMenuItem(Long id) {
+
+		if (menuRepo.findById(id).isPresent()) {
+			menuRepo.deleteById(id);
+
+			return "Menu id " + Long.toString(id) + " deleted successfully";
+
+		} else {
+			throw new MenuItemNotFoundException(id);
+		}
+
+	}
+
+}
