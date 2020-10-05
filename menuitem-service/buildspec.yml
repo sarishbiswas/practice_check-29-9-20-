@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+      docker: 18
+  pre_build:
+    commands:
+      - echo "Pre_build"
+      - echo "Logging in to Amazon ECR"
+      - $(aws ecr get-login  --no-include-email --region us-east-2)
+  build:
+    commands:
+      - echo "Build"
+      - echo "Entered build phase"
+      - echo "Building Java"
+      - cd  menuitem-service
+      - mvn clean package
+      - docker build -t menuitem-service-registry:latest .
+      - docker tag menuitem-service-registry:latest 258594952803.dkr.ecr.us-east-2.amazonaws.com/menuitem-service-registry:menuapp
+
+  post_build:
+    commands:
+      - echo "Post_build"
+      - docker push 258594952803.dkr.ecr.us-east-2.amazonaws.com/menuitem-service-registry:menuapp
+      - printf '[{"name":"menuitem-container","imageUri":"%s"}]' 258594952803.dkr.ecr.us-east-2.amazonaws.com/menuitem-service-registry:menuapp > taskdefinition.json
+      - cat taskdefinition.json
+
+artifacts:
+  files:
+    - menuitem-service/taskdefinition.json

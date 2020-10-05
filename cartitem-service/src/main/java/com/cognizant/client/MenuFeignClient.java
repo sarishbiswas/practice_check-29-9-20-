@@ -12,7 +12,7 @@ import com.cognizant.model.MenuItem;
 import feign.Headers;
 @Headers("Content-Type: application/json")
 //@FeignClient(url="${feign.url}")
-@FeignClient(name="menuitem-service" , url="${MENU_SERVICE:http://localhost:8081/menuitems}")
+@FeignClient(name="menuitem-service" , url="${MENU_SERVICE:http://localhost:80/menuitems}")
 public interface MenuFeignClient {
 	@GetMapping
 	public ResponseEntity<List<MenuItem>> getMenuItemListCustomer();

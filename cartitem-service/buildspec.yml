@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+      docker: 18
+  pre_build:
+    commands:
+      - echo "Pre_build"
+      - echo "Logging in to Amazon ECR"
+      - $(aws ecr get-login  --no-include-email --region us-east-2)
+  build:
+    commands:
+      - echo "Build"
+      - echo "Entered build phase"
+      - echo "Building Java"
+      - cd  cartitem-service
+      - mvn clean package
+      - docker build -t cartitem-service-registry:latest .
+      - docker tag cartitem-service-registry:latest 258594952803.dkr.ecr.us-east-2.amazonaws.com/cartitem-service-registry:cartapp
+
+  post_build:
+    commands:
+      - echo "Post_build"
+      - docker push 258594952803.dkr.ecr.us-east-2.amazonaws.com/cartitem-service-registry:cartapp
+      - printf '[{"name":"cartitem-container","imageUri":"%s"}]' 258594952803.dkr.ecr.us-east-2.amazonaws.com/cartitem-service-registry:cartapp > taskdefinition.json
+      - cat taskdefinition.json
+
+artifacts:
+  files:
+    - cartitem-service/taskdefinition.json
